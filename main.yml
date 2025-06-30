@@ -4,6 +4,7 @@
   connection: local
   roles:
     - role: gantsign.golang
+      golang_gopath: "{{ ansible_env.HOME }}/go"
     - role: "roles/install-tools"
     - role: "roles/configure-tmux"
     - role: "roles/configure-vim"
