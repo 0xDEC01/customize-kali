@@ -1,0 +1,7 @@
+---
+roles:
+  - src: gantsign.golang
+  - src: gantsign.visual-studio-code
+
+collections:
+  - name: community.general

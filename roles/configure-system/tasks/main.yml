@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for roles/configure-system
+- include_tasks: "start-ssh.yml"
+- include_tasks: "setup-msfdb.yml"
+- include_tasks: "disable-auto-apt.yml"
+- include_tasks: "modify-terminal.yml"
+- include_tasks: "configure-sudoers.yml"

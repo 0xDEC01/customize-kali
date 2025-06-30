@@ -1,0 +1,32 @@
+# -----------------------------------------------------------------------------
+# github_targets
+#
+# A list of GitHub repositories and their associated download instructions.
+#
+# Each entry describes:
+#   repo:     The GitHub repository identifier (owner/repo).
+#   location: The directory on the local system where the repo/assets should live.
+#   downloads:
+#     A list of asset-download definitions for that repo:
+#       regex:    A pattern to match the desired release asset filename.
+#       filename: (optional) Rename the downloaded file to this name.
+# -----------------------------------------------------------------------------
+---
+github_targets:
+  - repo: "jpillora/chisel"
+    location: "/opt/chisel"
+    downloads:
+      - regex: "_linux_amd64.gz"
+      - regex: "_windows_amd64.gz"
+
+  - repo: "carlospolop/PEASS-ng"
+    location: "/opt/peas"
+    downloads:
+      - regex: "linpeas.sh"
+      - regex: "winPEASx64.exe"
+
+  - repo: "WithSecureLabs/chainsaw"
+    location: "/opt/"
+    downloads:
+      - regex: '_all_platforms\+rules\+examples\.zip'
+        filename: "chainsaw"

@@ -1,0 +1,33 @@
+---
+- name: Clone useful GitHub repositories
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.location }}"
+  loop:
+    - { repo: "https://github.com/Flangvik/SharpCollection", location: "/opt/SharpCollection" }
+    - { repo: "https://github.com/danielmiessler/SecLists",     location: "/opt/SecLists" }
+  become: true
+
+- name: Create temporary build directory
+  ansible.builtin.tempfile:
+    state: directory
+  register: build_dir
+
+- name: Download GitHub release assets
+  ansible.builtin.command: >
+    {{ playbook_dir }}/shared/githubdownload.py
+    {{ item.0.repo }}
+    '{{ item.1.regex }}'
+    -o {{ item.0.location }}
+    {% if item.1.filename is defined %}-n {{ item.1.filename }}{% endif %}
+  loop: "{{ github_targets | subelements('downloads') }}"
+  loop_control:
+    label: "{{ item.0.repo }} → {{ item.0.location }}"
+  become: true
+
+- name: Remove temporary build directory
+  ansible.builtin.file:
+    path: "{{ build_dir.path }}"
+    state: absent
+  when: build_dir.path is defined
+

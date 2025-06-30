@@ -1,0 +1,21 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for roles/customize-browser
+
+burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
+
+# Define each artifact by its Maven path, artifact name, and version
+burpsuite_extras_jars:
+  jruby:
+    base_path: "org/jruby/jruby-complete"
+    artifact: "jruby-complete"
+    version: "9.4.13.0"
+  jython:
+    base_path: "org/python/jython-standalone"
+    artifact: "jython-standalone"
+    version: "2.7.4"
+
+firefox_plugins:
+  - "darkreader"
+  - "foxyproxy-standard"
+  - "wappalyzer"

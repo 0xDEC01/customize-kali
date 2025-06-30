@@ -1,0 +1,89 @@
+---
+- name: "Install Packages"
+  package:
+    name: "auditd"
+    state: present  
+  become: true
+  become_method: sudo
+
+- name: "Configure Audit Rules"
+  copy:
+    src: audit.rules
+    dest: /etc/audit/rules.d/audit.rules
+    owner: root
+    group: root
+    mode: 0640      
+  become: true
+  become_method: sudo
+
+- name: "Create _laurel user"
+  user:
+    name: _laurel
+    state: present
+    shell: /bin/false
+    create_home: no
+    home: /var/log/laurel
+  become: true
+  become_method: sudo
+
+- name: "Create directories for _laurel /var/log/laurel"
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0750') }}"
+  loop:
+    - { "path": "/var/log/laurel", "owner": "_laurel", "group": "_laurel" }
+    - { "path":"/etc/laurel" }
+  become: true
+  become_method: sudo
+  async: 15
+  poll: 0
+
+- name: "Copy laurel/config.toml to /etc/laurel/config.toml"
+  copy:
+    src: laurel/config.toml
+    dest: /etc/laurel/config.toml
+    owner: _laurel
+    group: _laurel
+    mode: 0640
+  become: true
+  become_method: sudo
+
+- name: "Copy laurel/laurel.conf to /etc/audit/plugins.d"
+  copy:
+    src: laurel/laurel.conf
+    dest: /etc/audit/plugins.d/laurel.conf
+    owner: root
+    group: root
+    mode: 0640
+  become: true
+  become_method: sudo
+
+- name: "Downloading latest version of laurel and extracting to /tmp/laurel"
+  ansible.builtin.command: >
+    python3 {{ playbook_dir }}/shared/githubdownload.py
+    threathunters-io/laurel
+    'x86_64-glibc.tar.gz'
+    -o /tmp/
+    -n laurel
+  args:
+    creates: /tmp/laurel
+  become: true
+
+- name: "Running install -m755 laurel /usr/local/sbin/laurel"
+  ansible.builtin.command: "install -m755 laurel /usr/local/sbin/laurel"
+  args:
+    chdir: /tmp/laurel/bin
+    creates: /usr/local/sbin/laurel
+  become: true
+  become_method: sudo
+  
+- name: "Restart auditd"
+  service:
+    name: auditd
+    state: restarted
+  become: true
+  become_method: sudo
+

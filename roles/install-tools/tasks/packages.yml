@@ -1,0 +1,48 @@
+# roles/install-tools/tasks/packages.yml
+---
+
+- name: Configure sources.list to use HTTPS
+  ansible.builtin.replace:
+    path: /etc/apt/sources.list
+    regexp: '^(deb\s+)http(://http.kali.org/kali.*)$'
+    replace: '\1https\2'
+  become: true
+
+- name: Update apt cache (refresh if older than 1 hour)
+  ansible.builtin.apt:
+    update_cache: true
+    force_apt_get: true
+    cache_valid_time: 3600
+  become: true
+  become_method: sudo
+
+- name: Upgrade packages
+  ansible.builtin.apt:
+    upgrade: safe
+    force_apt_get: true
+  become: true
+  become_method: sudo
+
+- name: Install common utilities
+  ansible.builtin.apt:
+    name:
+      - jq
+      - pipx
+      - flameshot
+      - exiftool
+      - rsyslog
+      - gh
+      - cloud-enum
+      - snmp-mibs-downloader
+    state: latest
+  become: true
+  become_method: sudo
+
+- name: Uncomment 'mibdirs' line in /etc/snmp/snmp.conf
+  ansible.builtin.lineinfile:
+    path: /etc/snmp/snmp.conf
+    regexp: '#\s*(mibdirs\s+.+)$'
+    line: '\1'
+    state: present
+    backrefs: yes
+  become: true

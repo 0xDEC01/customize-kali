@@ -1,0 +1,21 @@
+---
+- name: Enable Postgresql service
+  ignore_errors: true
+  ansible.builtin.systemd:
+    name: postgresql.service
+    state: started
+    enabled: true
+  become: true
+
+- name: Check msfdb status
+  ignore_errors: true
+  ansible.builtin.command: msfdb status
+  register: msfdb_status
+  changed_when: false
+  become: true
+
+- name: Initialize msfdb
+  ignore_errors: true
+  ansible.builtin.command: msfdb init
+  when: "'No configuration file found' in msfdb_status.stdout"
+  become: true

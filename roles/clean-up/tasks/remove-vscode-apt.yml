@@ -1,0 +1,15 @@
+---
+# As of writing this - the gantsign vscode implementation of installing apt keys
+# causes Warnings when trying to apt update. I chose to clean it up so I don't have to see that.i
+
+- name: "Remove Microsoft apt keyring"
+  ansible.builtin.file:
+    path: /etc/apt/keyrings/microsoft.asc
+    state: absent
+  become: true
+
+- name: "Delete any leftover VS Code sources list file"
+  ansible.builtin.file:
+    path: /etc/apt/sources.list.d/vscode.sources
+    state: absent
+  become: true

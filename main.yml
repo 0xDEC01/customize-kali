@@ -1,0 +1,27 @@
+---
+- name: "Customizing Kali"
+  hosts: localhost
+  connection: local
+  roles:
+    - role: gantsign.golang
+    - role: "roles/install-tools"
+    - role: "roles/configure-tmux"
+    - role: "roles/configure-vim"
+    - role: "roles/customize-browser"
+    - role: "roles/configure-logging"
+    - role: "roles/configure-system"
+    - role: gantsign.visual-studio-code
+      users:
+        - username: "{{ ansible_user_id }}"
+          visual_studio_code_extensions:
+            - streetsidesoftware.code-spell-checker
+            - ms-python.python
+            - ms-python.vscode-pylance
+            - DEVSENSE.phptools-vscode
+            - redhat.vscode-yaml
+            - redhat.ansible
+            - golang.Go
+            - ms-vscode.cpptools
+            - ms-vscode.cpptools-extension-pack
+            - xabikos.JavaScriptSnippets
+    - role: "roles/clean-up"

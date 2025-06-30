@@ -1,0 +1,6 @@
+---
+- name: Enable SSH service
+  ansible.builtin.service:
+    name: ssh
+    enabled: true
+  become: true

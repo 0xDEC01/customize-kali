@@ -1,0 +1,12 @@
+---
+- name: "Get golang version installed"
+  ansible.builtin.setup:
+    gather_subset:
+      - '!all'
+      - 'local'
+
+- name: Install Kerbrute via Go
+  ansible.builtin.shell: go install github.com/ropnop/kerbrute@master
+  environment:
+    PATH: "{{ ansible_local.golang.general.home }}/bin:{{ ansible_env.PATH }}"
+  become: false
