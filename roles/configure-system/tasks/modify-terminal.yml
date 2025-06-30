@@ -5,7 +5,7 @@
     section: General
     option: TerminalTransparency
     value: "0"
-    backup: yes
+    backup: no
   become: false
 
 - name: "Set Application Transparency to 0%"
@@ -14,5 +14,5 @@
     section: MainWindow
     option: ApplicationTransparency
     value: 0
-    backup: yes
+    backup: no
   become: false
