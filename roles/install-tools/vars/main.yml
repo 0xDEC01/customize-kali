@@ -17,7 +17,9 @@ github_targets:
     location: "/opt/chisel"
     downloads:
       - regex: "_linux_amd64.gz"
-      - regex: "_windows_amd64.gz"
+        filename: "chisel"
+      - regex: "_windows_amd64.(gz|zip)"
+        filename: "chisel.exe"
 
   - repo: "carlospolop/PEASS-ng"
     location: "/opt/peas"
