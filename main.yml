@@ -22,7 +22,5 @@
             - redhat.vscode-yaml
             - redhat.ansible
             - golang.Go
-            - ms-vscode.cpptools
-            - ms-vscode.cpptools-extension-pack
             - xabikos.JavaScriptSnippets
     - role: "roles/clean-up"
