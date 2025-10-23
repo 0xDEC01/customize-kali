@@ -19,7 +19,8 @@
     {{ item.0.repo }}
     '{{ item.1.regex }}'
     -o {{ item.0.location }}
-    {% if item.1.filename is defined %}-n {{ item.1.filename }}{% endif %}
+    {% if item.1.filename is defined %}-n {{ item.1.filename }}{% endif %} 
+    --allow-missing
   loop: "{{ github_targets | subelements('downloads') }}"
   loop_control:
     label: "{{ item.0.repo }} → {{ item.0.location }}"
