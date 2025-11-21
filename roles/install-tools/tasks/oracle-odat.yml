@@ -71,7 +71,24 @@
   become: true
 
 
-- name: Install ODAT Python dependencies
+- name: Ensure ODAT virtualenv exists
+  ansible.builtin.command: python3 -m venv /opt/odat/.venv
+  args:
+    creates: /opt/odat/.venv/bin/activate
+  become: true
+
+- name: Upgrade pip/setuptools/wheel inside ODAT venv
+  ansible.builtin.pip:
+    name:
+      - pip
+      - setuptools
+      - wheel
+    state: latest
+    virtualenv: /opt/odat/.venv
+    virtualenv_command: python3 -m venv
+  become: true
+
+- name: Install ODAT deps into venv
   ansible.builtin.pip:
     name:
       - python-libnmap
@@ -81,5 +98,16 @@
       - passlib
       - pycryptodome
     state: latest
-    executable: pip3
+    virtualenv: /opt/odat/.venv
+    virtualenv_command: python3 -m venv
+  become: true
+  when: true
+
+- name: Create ODAT launcher in /usr/local/bin
+  ansible.builtin.copy:
+    dest: /usr/local/bin/odat
+    mode: "0755"
+    content: |
+      #!/usr/bin/env bash
+      exec /opt/odat/.venv/bin/python /opt/odat/odat.py "$@"
   become: true
