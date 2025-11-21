@@ -1,0 +1,85 @@
+---
+# roles/install-tools/tasks/oracle-odat.yml
+
+- name: Set Oracle Instant Client variables
+  ansible.builtin.set_fact:
+    oracle_ic_base_url: "https://download.oracle.com/otn_software/linux/instantclient/214000"
+    oracle_ic_basic_zip: "instantclient-basic-linux.x64-21.4.0.0.0dbru.zip"
+    oracle_ic_sqlplus_zip: "instantclient-sqlplus-linux.x64-21.4.0.0.0dbru.zip"
+    oracle_ic_dir: "/opt/oracle/instantclient_21_4"
+    oracle_ic_tmp: "/opt/oracle/src"
+
+- name: Ensure Oracle directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "/opt/oracle"
+    - "{{ oracle_ic_tmp }}"
+  become: true
+
+- name: Download Oracle Instant Client zips
+  ansible.builtin.get_url:
+    url: "{{ oracle_ic_base_url }}/{{ item }}"
+    dest: "{{ oracle_ic_tmp }}/{{ item }}"
+    mode: "0644"
+  loop:
+    - "{{ oracle_ic_basic_zip }}"
+    - "{{ oracle_ic_sqlplus_zip }}"
+  become: true
+
+- name: Unarchive Instant Client zips into /opt/oracle
+  ansible.builtin.unarchive:
+    src: "{{ oracle_ic_tmp }}/{{ item }}"
+    dest: "/opt/oracle"
+    remote_src: true
+    creates: "{{ oracle_ic_dir }}"
+  loop:
+    - "{{ oracle_ic_basic_zip }}"
+    - "{{ oracle_ic_sqlplus_zip }}"
+  become: true
+
+- name: Ensure libaio.so.1 compat symlink exists (for Instant Client)
+  ansible.builtin.file:
+    src: "/lib/x86_64-linux-gnu/libaio.so.1t64"
+    dest: "/lib/x86_64-linux-gnu/libaio.so.1"
+    state: link
+  become: true
+  when: ansible_facts['architecture'] == "x86_64"
+
+- name: Register Instant Client with dynamic linker
+  ansible.builtin.copy:
+    dest: /etc/ld.so.conf.d/oracle-instantclient.conf
+    content: "{{ oracle_ic_dir }}\n"
+    mode: "0644"
+  become: true
+
+- name: Run ldconfig
+  ansible.builtin.command: ldconfig
+  become: true
+  changed_when: false
+
+- name: Add Instant Client env to /etc/profile.d
+  ansible.builtin.copy:
+    dest: /etc/profile.d/oracle-instantclient.sh
+    mode: "0644"
+    content: |
+      export ORACLE_HOME={{ oracle_ic_dir }}
+      export LD_LIBRARY_PATH={{ oracle_ic_dir }}:$LD_LIBRARY_PATH
+      export PATH={{ oracle_ic_dir }}:$PATH
+  become: true
+
+
+- name: Install ODAT Python dependencies
+  ansible.builtin.pip:
+    name:
+      - python-libnmap
+      - cx_Oracle
+      - colorlog
+      - termcolor
+      - passlib
+      - pycryptodome
+    state: latest
+    executable: pip3
+  become: true
