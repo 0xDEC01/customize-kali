@@ -35,6 +35,7 @@
       - cloud-enum
       - snmp-mibs-downloader
       - crackmapexec
+      - python3-venv
       - python3-scapy
       - unzip
       - build-essential
