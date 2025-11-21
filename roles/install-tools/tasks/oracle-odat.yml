@@ -75,6 +75,12 @@
       export PATH={{ oracle_ic_dir }}:$PATH
   become: true
 
+- name: Ensure Oracle Instant Client env is sourced in zsh
+  ansible.builtin.lineinfile:
+    path: "/home/{{ ansible_user_id }}/.zshrc"
+    line: "source /etc/profile.d/oracle-instantclient.sh"
+    create: true
+  become: true
 
 - name: Ensure ODAT virtualenv exists
   ansible.builtin.command: python3 -m venv /opt/odat/.venv
