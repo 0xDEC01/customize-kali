@@ -41,6 +41,7 @@
       - build-essential
       - libgmp-dev
       - libaio1t64
+      - code
     state: latest
   become: true
   become_method: sudo
