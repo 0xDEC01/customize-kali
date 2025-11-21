@@ -122,6 +122,8 @@
     mode: "0755"
     content: |
       #!/usr/bin/env bash
+      ODAT_DIR="/opt/odat"
       export PYTHONWARNINGS="ignore::SyntaxWarning"
-      exec /opt/odat/.venv/bin/python /opt/odat/odat.py "$@"
+      cd "$ODAT_DIR" || exit 1
+      exec "$ODAT_DIR/.venv/bin/python" "$ODAT_DIR/odat.py" "$@"
   become: true
