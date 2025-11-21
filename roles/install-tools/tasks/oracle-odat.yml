@@ -116,5 +116,6 @@
     mode: "0755"
     content: |
       #!/usr/bin/env bash
+      export PYTHONWARNINGS="ignore::SyntaxWarning"
       exec /opt/odat/.venv/bin/python /opt/odat/odat.py "$@"
   become: true
