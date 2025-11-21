@@ -97,6 +97,8 @@
       - termcolor
       - passlib
       - pycryptodome
+      - pyasyncore
+      - scapy
     state: latest
     virtualenv: /opt/odat/.venv
     virtualenv_command: python3 -m venv
