@@ -2,6 +2,13 @@
 - name: "Customizing Kali"
   hosts: localhost
   connection: local
+
+  pre_tasks:
+      - name: Check if VS Code is already installed
+        ansible.builtin.stat:
+          path: /usr/bin/code
+        register: vscode_bin
+  
   roles:
     - role: gantsign.golang
       golang_gopath: "{{ ansible_env.HOME }}/go"
@@ -11,5 +18,10 @@
     - role: "roles/customize-browser"
     - role: "roles/configure-logging"
     - role: "roles/configure-system"
-    - role: gantsign.visual-studio-code
     - role: "roles/clean-up"
+
+  post_tasks:
+    - name: Install VS Code via gantsign role only if not installed
+      ansible.builtin.include_role:
+        name: gantsign.visual-studio-code
+      when: not vscode_bin.stat.exists
