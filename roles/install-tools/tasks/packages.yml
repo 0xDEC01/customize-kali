@@ -8,6 +8,24 @@
     replace: '\1https\2'
   become: true
 
+- name: Find existing VS Code apt repo files (to avoid Signed-By conflicts)
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -lR "packages.microsoft.com/repos/code" /etc/apt/sources.list.d || true
+  args:
+    executable: /bin/bash
+  register: vscode_repo_files
+  changed_when: false
+  become: true
+
+- name: Remove existing VS Code repo files
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop: "{{ vscode_repo_files.stdout_lines }}"
+  when: vscode_repo_files.stdout_lines | length > 0
+  become: true
+
 - name: Update apt cache (refresh if older than 1 hour)
   ansible.builtin.apt:
     update_cache: true
