@@ -127,3 +127,11 @@
       cd "$ODAT_DIR" || exit 1
       exec "$ODAT_DIR/.venv/bin/python" "$ODAT_DIR/odat.py" "$@"
   become: true
+
+- name: Ensure /opt/odat is writeable
+  ansible.builtin.file:
+    path: /opt/odat
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    recurse: true
+  become: true
