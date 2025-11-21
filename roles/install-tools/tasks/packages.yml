@@ -34,6 +34,12 @@
       - gh
       - cloud-enum
       - snmp-mibs-downloader
+      - crackmapexec
+      - python3-scapy
+      - unzip
+      - build-essential
+      - libgmp-dev
+      - libaio1t64
     state: latest
   become: true
   become_method: sudo
