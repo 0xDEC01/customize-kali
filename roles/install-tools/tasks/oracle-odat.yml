@@ -29,15 +29,20 @@
     - "{{ oracle_ic_sqlplus_zip }}"
   become: true
 
-- name: Unarchive Instant Client zips into /opt/oracle
+- name: Unarchive Instant Client basic zip into /opt/oracle
   ansible.builtin.unarchive:
-    src: "{{ oracle_ic_tmp }}/{{ item }}"
+    src: "{{ oracle_ic_tmp }}/{{ oracle_ic_basic_zip }}"
     dest: "/opt/oracle"
     remote_src: true
-    creates: "{{ oracle_ic_dir }}"
-  loop:
-    - "{{ oracle_ic_basic_zip }}"
-    - "{{ oracle_ic_sqlplus_zip }}"
+    creates: "{{ oracle_ic_dir }}/libclntsh.so.21.1"
+  become: true
+
+- name: Unarchive Instant Client sqlplus zip into /opt/oracle
+  ansible.builtin.unarchive:
+    src: "{{ oracle_ic_tmp }}/{{ oracle_ic_sqlplus_zip }}"
+    dest: "/opt/oracle"
+    remote_src: true
+    creates: "{{ oracle_ic_dir }}/sqlplus"
   become: true
 
 - name: Ensure libaio.so.1 compat symlink exists (for Instant Client)
