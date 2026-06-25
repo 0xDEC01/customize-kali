@@ -58,6 +58,7 @@
       - build-essential
       - libgmp-dev
       - libaio1t64
+      - odat
     state: latest
   become: true
   become_method: sudo
