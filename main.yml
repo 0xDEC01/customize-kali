@@ -12,6 +12,7 @@
   roles:
     - role: gantsign.golang
       golang_gopath: "{{ ansible_env.HOME }}/go"
+      golang_mirror: "https://go.dev/dl"
     - role: "roles/install-tools"
     - role: "roles/configure-tmux"
     - role: "roles/configure-vim"
