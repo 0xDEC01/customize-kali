@@ -49,7 +49,6 @@
       - flameshot
       - exiftool
       - rsyslog
-      - gh
       - cloud-enum
       - snmp-mibs-downloader
       - crackmapexec
